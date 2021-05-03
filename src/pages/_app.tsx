@@ -1,3 +1,7 @@
+import "../../public/custom.css";
+import "remark-admonitions/styles/classic.css";
+import "remark-admonitions/styles/infima.css";
+import "prism-themes/themes/prism-dracula.css";
 import { appWithTranslation } from "next-i18next";
 
 import { ChakraProvider } from "@chakra-ui/react";
