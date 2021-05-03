@@ -7,9 +7,12 @@ specifiers:
   '@mdx-js/loader': ^1.6.22
   '@mdx-js/react': ^1.6.22
   '@next/mdx': ^10.2.0
+  '@types/concurrently': ^6.0.1
+  '@types/mdx-js__react': ^1.5.3
   '@types/node': ^15.0.1
   '@types/react': ^17.0.4
   '@types/react-dom': ^17.0.3
+  '@types/wait-on': ^5.2.0
   concurrently: ^6.0.2
   framer-motion: ^4.1.11
   gray-matter: ^4.0.3
@@ -20,6 +23,7 @@ specifiers:
   open-cli: ^6.0.1
   react: ^17.0.2
   react-dom: ^17.0.2
+  react-i18next: ^11.8.15
   typescript: ^4.2.4
   wait-on: ^5.3.0
 
@@ -38,11 +42,15 @@ dependencies:
   next-mdx-remote: 2.1.4_react-dom@17.0.2+react@17.0.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
+  react-i18next: 11.8.15_i18next@20.2.2+react@17.0.2
 
 devDependencies:
+  '@types/concurrently': 6.0.1
+  '@types/mdx-js__react': 1.5.3
   '@types/node': 15.0.1
   '@types/react': 17.0.4
   '@types/react-dom': 17.0.3
+  '@types/wait-on': 5.2.0
   concurrently: 6.0.2
   open-cli: 6.0.1
   typescript: 4.2.4
@@ -2331,6 +2339,12 @@ packages:
     resolution: {integrity: sha512-XO6INPbZCxdprl+9qa/AAbFFOMzzwqYxpjPgLICrMD6C2FCw6qfJOPcBk6JqqPLSaZ/Qx87qn4rpPmPMwaAK6w==}
     dev: true
 
+  /@types/concurrently/6.0.1:
+    resolution: {integrity: sha512-44I9tMSrgX7g39Ie7V/8N0OWG6696UtzPlv2ROsnQWyfyRVUp2Ue8ewxZkHopmX4Zyj6hiPgY1r14FqHsgfO4Q==}
+    dependencies:
+      '@types/node': 15.0.1
+    dev: true
+
   /@types/debug/4.1.5:
     resolution: {integrity: sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==}
     dev: true
@@ -2369,6 +2383,12 @@ packages:
     dependencies:
       '@types/unist': 2.0.3
     dev: false
+
+  /@types/mdx-js__react/1.5.3:
+    resolution: {integrity: sha512-flP0BpS5rXnEbkU5ih79ARaI/+rK10Iee+zxTaWYtoiyc2+f1EJ8EnYgMmXHdAuI7OX4J9/hdoXfrfrri0AT+Q==}
+    dependencies:
+      '@types/react': 17.0.4
+    dev: true
 
   /@types/minimist/1.2.1:
     resolution: {integrity: sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg==}
@@ -2415,6 +2435,10 @@ packages:
   /@types/unist/2.0.3:
     resolution: {integrity: sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==}
     dev: false
+
+  /@types/wait-on/5.2.0:
+    resolution: {integrity: sha512-3+jsMyPm8aot1mqDUDLOl+dejPvpysUUoUXD6CCRY20MNNhcjEfvdcBnGdnk7DEYs9Hr16ubGJA/9/QW0Df/9g==}
+    dev: true
 
   /@types/warning/3.0.0:
     resolution: {integrity: sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=}
