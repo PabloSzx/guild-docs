@@ -2,11 +2,9 @@ import { readdir, readFile } from "fs/promises";
 import matter from "gray-matter";
 import { appWithTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import renderToString from "next-mdx-remote/render-to-string";
+import { serialize } from "next-mdx-remote/serialize";
 import { join, resolve } from "path";
 import { Fragment } from "react";
-
-import { components } from "./shared";
 
 import type { GetStaticPathsContext, GetStaticPropsContext, GetStaticPropsResult } from "next";
 import type { CmpInternalProps } from "./client";
@@ -56,12 +54,10 @@ export async function MDXProps(
   const { content, data } = matter(source);
 
   const {
-    provider,
     translations: { _nextI18Next },
   } = await prepareMDX;
 
-  const mdxSource = await renderToString(content, {
-    components,
+  const mdxSource = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [
         [
@@ -81,7 +77,6 @@ export async function MDXProps(
       rehypePlugins: [],
     },
     scope: data,
-    provider,
   });
 
   return {

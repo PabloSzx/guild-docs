@@ -20,8 +20,6 @@ import { Box, Divider, Text, useColorModeValue } from "@chakra-ui/react";
 import { Translated } from "../components/Translated";
 import { AppThemeProvider } from "../pages/_app";
 
-import type { MdxRemote } from "next-mdx-remote/types";
-
 const p = ({ children, ...delegated }: TextProps) => {
   return (
     <Text as="p" mt={4} lineHeight="tall" {...delegated}>
@@ -181,7 +179,7 @@ const td = (props: BoxProps) => (
   />
 );
 
-export const components: MdxRemote.Components = {
+export const components = {
   Image,
   h1,
   h2,
