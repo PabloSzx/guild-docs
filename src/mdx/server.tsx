@@ -1,4 +1,5 @@
-import { readdir, readFile } from "fs/promises";
+import { readFile } from "fs/promises";
+import globby from "globby";
 import matter from "gray-matter";
 import { appWithTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -88,15 +89,8 @@ export async function MDXProps(
   };
 }
 
-async function getDocsPaths(dirRelativeToRoot: string) {
-  const docsPath = join(process.cwd(), dirRelativeToRoot);
-
-  const docsFilePaths = await readdir(docsPath);
-  return docsFilePaths.filter((path) => /\.mdx?$/.test(path));
-}
-
 export async function MDXPaths(
-  folderPath: string,
+  patterns: string | string[],
   { locales = ["en", "es"] }: Pick<GetStaticPathsContext, "locales"> = {}
 ) {
   const paths: {
@@ -106,7 +100,14 @@ export async function MDXPaths(
     locale: string;
   }[] = [];
 
-  const docsSlugs = (await getDocsPaths(folderPath)).map((path) => path.replace(/\.mdx?$/, ""));
+  const docsSlugs = (await globby(patterns))
+    .map((path) =>
+      path
+        .replace(/\.mdx?$/, "")
+        .split("/")
+        .pop()
+    )
+    .filter((v): v is NonNullable<typeof v> => !!v);
 
   for (const locale of locales) {
     for (const slug of docsSlugs) {

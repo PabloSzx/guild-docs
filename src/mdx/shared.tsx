@@ -18,7 +18,6 @@ import {
 import { Box, Divider, Text, useColorModeValue } from "@chakra-ui/react";
 
 import { Translated } from "../components/Translated";
-import { AppThemeProvider } from "../pages/_app";
 
 const p = ({ children, ...delegated }: TextProps) => {
   return (
@@ -201,5 +200,4 @@ export const components = {
   Translated,
   Stack,
   inlineCode: (props: CodeProps) => <Code colorScheme="yellow" fontSize="0.84em" {...props} />,
-  wrapper: AppThemeProvider,
 };
