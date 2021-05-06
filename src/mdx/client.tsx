@@ -1,5 +1,6 @@
 import { SSRConfig, useTranslation } from "next-i18next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import Head from "next/head";
 import { createElement, ReactElement, ReactNode } from "react";
 
 import { components } from "./shared";
@@ -19,7 +20,18 @@ export interface CmpInternalProps {
 
 export function MDXPage(cmp: (props: CmpProps) => ReactElement) {
   return function MDXPage({ children, source, frontMatter }: CmpInternalProps) {
-    const content = <MDXRemote {...source} components={components} />;
+    const title = frontMatter.title;
+
+    const content = (
+      <>
+        {title ? (
+          <Head>
+            <title>{title}</title>
+          </Head>
+        ) : null}
+        <MDXRemote {...source} components={components} />
+      </>
+    );
 
     return createElement(cmp, {
       content,

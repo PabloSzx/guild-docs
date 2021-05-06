@@ -1,4 +1,4 @@
-import { readFile } from "fs/promises";
+import { access, readFile } from "fs/promises";
 import globby from "globby";
 import matter from "gray-matter";
 import { appWithTranslation } from "next-i18next";
@@ -26,13 +26,48 @@ async function prepareMDXRenderWithTranslations(locale: string | undefined) {
   };
 }
 
+function fileExists(path: string) {
+  return access(path).then(
+    () => true,
+    () => false
+  );
+}
+
+async function readMarkdownFile(basePath: string, slugPath: string[]) {
+  const sharedStartPath = [basePath, slugPath.join("/")];
+  const mdxPath = [...sharedStartPath, ".mdx"].join("");
+  const mdPath = [...sharedStartPath, ".md"].join("");
+  const indexMdPath = [...sharedStartPath, "/index.md"].join("");
+  const indexMdxPath = [...sharedStartPath, "/index.mdx"].join("");
+
+  const [mdPathExists, mdxPathExists, indexMdPathExists, indexMdxPathExists] = await Promise.all([
+    fileExists(mdPath),
+    fileExists(mdxPath),
+    fileExists(indexMdPath),
+    fileExists(indexMdxPath),
+  ]);
+
+  if (mdPathExists) {
+    return readFile(mdPath);
+  } else if (mdxPathExists) {
+    return readFile(mdxPath);
+  } else if (indexMdPathExists) {
+    return readFile(indexMdPath);
+  } else if (indexMdxPathExists) {
+    return readFile(indexMdxPath);
+  }
+  throw Error("Markdown File Couldn't be found!");
+}
+
 export async function MDXProps(
   getSource: (data: {
     params: Record<string, string | string[] | undefined>;
     readFile: typeof readFile;
     join: typeof join;
     resolve: typeof resolve;
-    getParam: (name: string) => string;
+    readMarkdownFile: typeof readMarkdownFile;
+    getStringParam: (name: string) => string;
+    getArrayParam: (name: string) => string[];
   }) => Promise<string | Buffer>,
   { locale = "es", params = {} }: Pick<GetStaticPropsContext, "locale" | "params"> = {}
 ): Promise<GetStaticPropsResult<CmpInternalProps>> {
@@ -41,12 +76,22 @@ export async function MDXProps(
   const source = await getSource({
     params,
     readFile,
+    readMarkdownFile,
     join,
     resolve,
-    getParam(name) {
+    getStringParam(name) {
       const param = params[name];
 
       if (typeof param !== "string") throw Error(`No ${name} provided!`);
+
+      return param;
+    },
+    getArrayParam(name) {
+      const param = params[name];
+
+      if (param == null) return [];
+
+      if (!Array.isArray(param)) throw Error(`No ${name} provided!`);
 
       return param;
     },
@@ -89,25 +134,53 @@ export async function MDXProps(
   };
 }
 
+export type MDXCatchAllPathsResult = Promise<{
+  paths: {
+    params: {
+      slug: string[];
+    };
+    locale: string;
+  }[];
+  fallback: boolean;
+}>;
+
+export interface MDXPathsOptions {
+  ctx?: Pick<GetStaticPathsContext, "locales">;
+  /**
+   * If not specified and the pattern is a string, the default is the same pattern used
+   */
+  replaceBasePath?: string;
+}
+
 export async function MDXPaths(
   patterns: string | string[],
-  { locales = ["en", "es"] }: Pick<GetStaticPathsContext, "locales"> = {}
-) {
+  {
+    ctx: { locales = ["en", "es"] } = {},
+    replaceBasePath = typeof patterns === "string" ? patterns : undefined,
+  }: MDXPathsOptions = {}
+): MDXCatchAllPathsResult {
   const paths: {
     params: {
-      slug: string;
+      slug: string[];
     };
     locale: string;
   }[] = [];
 
-  const docsSlugs = (await globby(patterns))
-    .map((path) =>
-      path
-        .replace(/\.mdx?$/, "")
-        .split("/")
-        .pop()
-    )
-    .filter((v): v is NonNullable<typeof v> => !!v);
+  const globbyPatterns = await globby(patterns);
+
+  const docsSlugs = globbyPatterns.reduce((acum, path) => {
+    if (!/\.mdx?$/.test(path)) return acum;
+
+    let slugPath = path.replace(/\.mdx?$/, "");
+
+    if (replaceBasePath) slugPath = slugPath.replace(replaceBasePath, "");
+
+    const slug = slugPath.split("/").filter((v) => !!v);
+
+    acum.push(slug);
+
+    return acum;
+  }, [] as string[][]);
 
   for (const locale of locales) {
     for (const slug of docsSlugs) {
@@ -117,6 +190,17 @@ export async function MDXPaths(
         },
         locale,
       });
+
+      const dupSlug = [...slug];
+
+      if (dupSlug.pop() === "index") {
+        paths.push({
+          params: {
+            slug: dupSlug,
+          },
+          locale,
+        });
+      }
     }
   }
 
