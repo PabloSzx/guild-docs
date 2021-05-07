@@ -7,6 +7,9 @@ import { serialize } from "next-mdx-remote/serialize";
 import { join, resolve } from "path";
 import { Fragment } from "react";
 
+import { getRoutes, getSlug, IRoutes } from "../../routes";
+import { IS_DEVELOPMENT } from "../constants";
+
 import type { GetStaticPathsContext, GetStaticPropsContext, GetStaticPropsResult } from "next";
 import type { CmpInternalProps } from "./client";
 
@@ -58,6 +61,14 @@ async function readMarkdownFile(basePath: string, slugPath: string[]) {
   }
   throw Error("Markdown File Couldn't be found!");
 }
+
+const mdxRoutes: IRoutes = IS_DEVELOPMENT
+  ? getRoutes()
+  : (process.env.SERIALIZED_MDX_ROUTES ? JSON.parse(process.env.SERIALIZED_MDX_ROUTES) : null) ||
+    (() => {
+      console.warn("Routes in environment variable not found!");
+      return getRoutes();
+    })();
 
 export async function MDXProps(
   getSource: (data: {
@@ -130,6 +141,7 @@ export async function MDXProps(
       source: mdxSource,
       frontMatter: data,
       _nextI18Next,
+      mdxRoutes,
     },
   };
 }
@@ -171,13 +183,12 @@ export async function MDXPaths(
   const docsSlugs = globbyPatterns.reduce((acum, path) => {
     if (!/\.mdx?$/.test(path)) return acum;
 
-    let slugPath = path.replace(/\.mdx?$/, "");
-
-    if (replaceBasePath) slugPath = slugPath.replace(replaceBasePath, "");
-
-    const slug = slugPath.split("/").filter((v) => !!v);
-
-    acum.push(slug);
+    acum.push(
+      getSlug({
+        path,
+        replaceBasePath,
+      })
+    );
 
     return acum;
   }, [] as string[][]);
