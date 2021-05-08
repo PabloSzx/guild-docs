@@ -2,15 +2,12 @@ import { readFileSync } from "fs";
 import globby from "globby";
 import matter from "gray-matter";
 
-export interface IRoutes {
-  // @ts-expect-error
+export type IRoutes = {
   $routes?: [href: string, name: string][];
-
-  // @ts-expect-error
   $name?: string;
-
-  [key: string]: IRoutes;
-}
+} & {
+  [P: string]: IRoutes;
+};
 
 export function getSlug({ path, replaceBasePath }: { path: string; replaceBasePath?: string }) {
   let slugPath = path.replace(/\.mdx?$/, "");
