@@ -84,6 +84,7 @@ function NavigationItem({
             : undefined
         }
         alignItems="center"
+        marginY="2px"
         paddingX={`${depth + 1}em`}
       >
         <span>{name || href}</span>
@@ -119,9 +120,13 @@ export function MDXNavigation({
   });
 
   if (depth === 0) {
-    return <Stack width="280px">{Component}</Stack>;
+    return (
+      <Stack width="280px" spacing="0">
+        {Component}
+      </Stack>
+    );
   }
-  return <Stack>{Component}</Stack>;
+  return <>{Component}</>;
 }
 
 export function MDXPage(cmp: (props: CmpProps) => ReactElement) {
