@@ -7,8 +7,8 @@ import { serialize } from "next-mdx-remote/serialize";
 import { join, resolve } from "path";
 import { Fragment } from "react";
 
-import { getRoutes, getSlug, IRoutes } from "../../routes";
-import { IS_DEVELOPMENT } from "../constants";
+import { getRoutes, getSlug } from "../../routes";
+import { IS_PRODUCTION } from "../constants";
 
 import type { GetStaticPathsContext, GetStaticPropsContext, GetStaticPropsResult } from "next";
 import type { CmpInternalProps } from "./client";
@@ -62,14 +62,7 @@ async function readMarkdownFile(basePath: string, slugPath: string[]) {
   throw Error("Markdown File Couldn't be found!");
 }
 
-const mdxRoutes: IRoutes = IS_DEVELOPMENT
-  ? getRoutes()
-  : (process.env.SERIALIZED_MDX_ROUTES ? JSON.parse(process.env.SERIALIZED_MDX_ROUTES) : null) ||
-    (() => {
-      console.warn("Routes in environment variable not found!");
-      return getRoutes();
-    })();
-
+const mdxRoutes: CmpInternalProps["mdxRoutes"] = IS_PRODUCTION ? 1 : getRoutes();
 export async function MDXProps(
   getSource: (data: {
     params: Record<string, string | string[] | undefined>;

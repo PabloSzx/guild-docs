@@ -11,6 +11,8 @@ specifiers:
   '@types/lodash': ^4.14.168
   '@types/mdx-js__react': ^1.5.3
   '@types/node': ^15.0.2
+  '@types/nprogress': ^0.2.0
+  '@types/prismjs': ^1.16.5
   '@types/react': ^17.0.5
   '@types/react-dom': ^17.0.3
   '@types/wait-on': ^5.2.0
@@ -25,7 +27,7 @@ specifiers:
   next: ^10.2.0
   next-i18next: ^8.2.0
   next-mdx-remote: ^3.0.1
-  nextjs-progressbar: ^0.0.9
+  nprogress: ^0.2.0
   open-cli: ^6.0.1
   prism-themes: ^1.7.0
   prismjs: ^1.23.0
@@ -54,7 +56,7 @@ dependencies:
   next: 10.2.0_507781d099a67956587e23f5ac79078b
   next-i18next: 8.2.0_next@10.2.0+react@17.0.2
   next-mdx-remote: 3.0.1_react-dom@17.0.2+react@17.0.2
-  nextjs-progressbar: 0.0.9_next@10.2.0+react@17.0.2
+  nprogress: 0.2.0
   prism-themes: 1.7.0
   prismjs: 1.23.0
   react: 17.0.2
@@ -68,6 +70,8 @@ devDependencies:
   '@types/lodash': 4.14.168
   '@types/mdx-js__react': 1.5.3
   '@types/node': 15.0.2
+  '@types/nprogress': 0.2.0
+  '@types/prismjs': 1.16.5
   '@types/react': 17.0.5
   '@types/react-dom': 17.0.3
   '@types/wait-on': 5.2.0
@@ -1474,6 +1478,10 @@ packages:
     resolution: {integrity: sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==}
     dev: true
 
+  /@types/nprogress/0.2.0:
+    resolution: {integrity: sha512-1cYJrqq9GezNFPsWTZpFut/d4CjpZqA0vhqDUPFWYKF1oIyBz5qnoYMzR+0C/T96t3ebLAC1SSnwrVOm5/j74A==}
+    dev: true
+
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: false
@@ -1481,6 +1489,10 @@ packages:
   /@types/parse5/5.0.3:
     resolution: {integrity: sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==}
     dev: false
+
+  /@types/prismjs/1.16.5:
+    resolution: {integrity: sha512-nSU7U6FQDJJCraFNwaHmH5YDsd/VA9rTnJ7B7AGFdn+m+VSt3FjLWN7+AbqxZ67dbFazqtrDFUto3HK4ljrHIg==}
+    dev: true
 
   /@types/prop-types/15.7.3:
     resolution: {integrity: sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==}
@@ -3641,17 +3653,6 @@ packages:
     transitivePeerDependencies:
       - typescript
       - webpack
-    dev: false
-
-  /nextjs-progressbar/0.0.9_next@10.2.0+react@17.0.2:
-    resolution: {integrity: sha512-t7bsQOIE09lY25AL+zS3GMhSX4bCgdosuJ+1aG4EOpzHSAxY3zfY4PKncilWT5fdcbbyo/iM//KKN79psgpZXw==}
-    peerDependencies:
-      next: ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-      react: ^16.0.0 || ^17.0.0
-    dependencies:
-      next: 10.2.0_507781d099a67956587e23f5ac79078b
-      nprogress: 0.2.0
-      react: 17.0.2
     dev: false
 
   /node-fetch/2.6.1:

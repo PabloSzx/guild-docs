@@ -12,12 +12,13 @@ const withMDX = require("@next/mdx")({
 
 const { getRoutes } = require("./routes.ts");
 
-process.env.SERIALIZED_MDX_ROUTES = JSON.stringify(getRoutes());
-
 module.exports = withMDX({
   pageExtensions: ["tsx", "mdx"],
   future: {
     webpack5: true,
   },
   i18n,
+  env: {
+    SERIALIZED_MDX_ROUTES: JSON.stringify(getRoutes()),
+  },
 });

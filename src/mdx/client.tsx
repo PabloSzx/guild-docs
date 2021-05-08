@@ -28,7 +28,7 @@ export interface CmpInternalProps {
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
   frontMatter: Record<string, any>;
   _nextI18Next: SSRConfig["_nextI18Next"];
-  mdxRoutes: IRoutes;
+  mdxRoutes: IRoutes | 1;
 }
 
 export function arePathnamesEqual(a: string, b: string) {
@@ -72,8 +72,17 @@ export function MDXNavigation({
 
                       if (!arePathnamesEqual(Router.asPath, finalHref)) {
                         Router.push(finalHref, undefined, {
-                          scroll: false,
+                          scroll: true,
                         });
+                      }
+                    }
+                  : undefined
+              }
+              onMouseOver={
+                isAnchor
+                  ? () => {
+                      if (!arePathnamesEqual(Router.asPath, finalHref)) {
+                        Router.prefetch(finalHref);
                       }
                     }
                   : undefined
