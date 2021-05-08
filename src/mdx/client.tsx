@@ -4,13 +4,8 @@ import Head from "next/head";
 import Router from "next/router";
 import { createElement, ReactElement, ReactNode } from "react";
 
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Button, Collapse, Stack, useDisclosure } from "@chakra-ui/react";
 
 import { components } from "./shared";
 
@@ -38,6 +33,78 @@ export function arePathnamesEqual(a: string, b: string) {
   return a === b;
 }
 
+function NavigationItem({
+  item: { href, name, paths, isPage },
+  acumHref,
+  depth,
+}: {
+  item: Paths;
+  acumHref: string;
+  depth: number;
+}) {
+  const finalHref = acumHref + "/" + (href === "index" ? "" : href);
+
+  const isAnchor = isPage && !paths?.length;
+
+  const { isOpen, onToggle } = useDisclosure({
+    defaultIsOpen: depth < 1,
+  });
+
+  return (
+    <>
+      <Button
+        justifyContent="flex-start"
+        variant="ghost"
+        width="100%"
+        as={isAnchor ? "a" : undefined}
+        href={isAnchor ? finalHref : undefined}
+        whiteSpace="normal"
+        onClick={
+          isAnchor
+            ? (ev) => {
+                ev.preventDefault();
+
+                if (!arePathnamesEqual(Router.asPath, finalHref)) {
+                  Router.push(finalHref, undefined, {
+                    scroll: true,
+                  });
+                }
+              }
+            : () => {
+                onToggle();
+              }
+        }
+        onMouseOver={
+          isAnchor
+            ? () => {
+                if (!arePathnamesEqual(Router.asPath, finalHref)) {
+                  Router.prefetch(finalHref);
+                }
+              }
+            : undefined
+        }
+        alignItems="center"
+        paddingX={`${depth + 1}em`}
+      >
+        <span>{name || href}</span>
+        {paths?.length ? (
+          <ChevronDownIcon
+            className="chevdown"
+            transition="transform 0.3s"
+            transform={isOpen ? "rotate(180deg)" : undefined}
+          />
+        ) : null}
+      </Button>
+
+      {paths?.length ? (
+        <Collapse in={isOpen} unmountOnExit>
+          <MDXNavigation paths={paths} acumHref={finalHref} depth={depth + 1} />
+        </Collapse>
+      ) : null}
+    </>
+  );
+}
+
 export function MDXNavigation({
   paths,
   acumHref = "",
@@ -47,61 +114,14 @@ export function MDXNavigation({
   acumHref?: string;
   depth?: number;
 }) {
-  return (
-    <Accordion
-      allowMultiple
-      allowToggle
-      defaultIndex={depth < 1 ? Array.from(paths.keys()) : undefined}
-      width={depth === 0 ? "280px" : undefined}
-      minWidth={depth === 0 ? "280px" : undefined}
-    >
-      {paths.map(({ href, name, paths, isPage }, index) => {
-        const finalHref = acumHref + "/" + (href === "index" ? "" : href);
+  const Component = paths.map((item, index) => {
+    return <NavigationItem key={index} item={item} acumHref={acumHref} depth={depth} />;
+  });
 
-        const isAnchor = isPage && !paths?.length;
-
-        return (
-          <AccordionItem key={index}>
-            <AccordionButton
-              as={isAnchor ? "a" : undefined}
-              href={isAnchor ? finalHref : undefined}
-              onClick={
-                isAnchor
-                  ? (ev) => {
-                      ev.preventDefault();
-
-                      if (!arePathnamesEqual(Router.asPath, finalHref)) {
-                        Router.push(finalHref, undefined, {
-                          scroll: true,
-                        });
-                      }
-                    }
-                  : undefined
-              }
-              onMouseOver={
-                isAnchor
-                  ? () => {
-                      if (!arePathnamesEqual(Router.asPath, finalHref)) {
-                        Router.prefetch(finalHref);
-                      }
-                    }
-                  : undefined
-              }
-            >
-              {isAnchor ? <span children={name || href} /> : <p>{name || href}</p>}
-              {paths?.length ? <AccordionIcon /> : null}
-            </AccordionButton>
-
-            {paths?.length ? (
-              <AccordionPanel>
-                <MDXNavigation paths={paths} key={index} acumHref={finalHref} depth={depth + 1} />
-              </AccordionPanel>
-            ) : null}
-          </AccordionItem>
-        );
-      })}
-    </Accordion>
-  );
+  if (depth === 0) {
+    return <Stack width="280px">{Component}</Stack>;
+  }
+  return <Stack>{Component}</Stack>;
 }
 
 export function MDXPage(cmp: (props: CmpProps) => ReactElement) {
@@ -115,7 +135,7 @@ export function MDXPage(cmp: (props: CmpProps) => ReactElement) {
             <title>{title}</title>
           </Head>
         ) : null}
-        <nav></nav>
+
         <MDXRemote {...source} components={components} />
       </>
     );

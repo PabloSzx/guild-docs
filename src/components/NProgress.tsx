@@ -9,7 +9,7 @@ export const NextNProgress = memo(
   ({
     color = "#1D487F",
     startPosition = 0.3,
-    startDelayMs = 0,
+    startDelayMs = 50,
     stopDelayMs = 200,
     height = 5,
     options,

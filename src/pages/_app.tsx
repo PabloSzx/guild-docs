@@ -6,7 +6,8 @@ import "prism-themes/themes/prism-dracula.css";
 import { appWithTranslation } from "next-i18next";
 import { ReactNode, useMemo } from "react";
 
-import { ChakraProvider, extendTheme, Stack } from "@chakra-ui/react";
+import { Box, ChakraProvider, extendTheme, Stack } from "@chakra-ui/react";
+
 import { NextNProgress } from "../components/NProgress";
 import { CmpInternalProps, MDXNavigation } from "../mdx/client";
 import { iterateRoutes } from "../mdx/routes";
@@ -21,28 +22,30 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
   return <ChakraProvider theme={theme}>{children}</ChakraProvider>;
 }
 
+const serializedMdx = process.env.SERIALIZED_MDX_ROUTES;
+const mdxRoutesData = serializedMdx && JSON.parse(serializedMdx);
+
 function App({ Component, pageProps }: AppProps) {
   const mdxRoutes: CmpInternalProps["mdxRoutes"] | undefined = pageProps.mdxRoutes;
   const Navigation = useMemo(() => {
     if (!mdxRoutes) return null;
 
     if (mdxRoutes === 1) {
-      const mdxRoutesData = process.env.SERIALIZED_MDX_ROUTES;
       if (!mdxRoutesData) return null;
 
-      return <MDXNavigation paths={iterateRoutes(JSON.parse(mdxRoutesData))} />;
+      return <MDXNavigation paths={iterateRoutes(mdxRoutesData)} />;
     }
 
     return <MDXNavigation paths={iterateRoutes(mdxRoutes)} />;
-
-    // Prevent not needed re-render after navigation
   }, [mdxRoutes]);
   return (
     <>
       <NextNProgress />
       <AppThemeProvider>
         <Stack isInline>
-          {Navigation}
+          <Box maxW="280px" width="100%">
+            {Navigation}
+          </Box>
           <Component {...pageProps} />
         </Stack>
       </AppThemeProvider>

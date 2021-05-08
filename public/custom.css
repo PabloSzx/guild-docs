@@ -9,6 +9,12 @@
   --ifm-code-font-size: 95%;
 }
 
+.remark-highlight {
+  overflow-x: auto;
+  width: 100%;
+  max-width: 80vw;
+}
+
 .admonition-shell {
   --ra-admonition-background-color: rgb(41, 45, 62) !important;
   --ra-admonition-color: #ffffff;
